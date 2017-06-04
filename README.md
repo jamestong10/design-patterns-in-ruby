@@ -11,6 +11,7 @@ This book covers 14 of the original 23 GoF design patterns.
 * [Composite](#composite)
 * [Iterator](#iterator)
 * [Commands](#commands)
+* [Mediator](#mediator)
 * [Adapter](#adapter)
 * [Proxy](#proxy)
 * [Decorator](#decorator)
@@ -37,7 +38,8 @@ This book covers 14 of the original 23 GoF design patterns.
     * increases encapsulation
     * increases modularity, implementations can be easily swapped
 
-4. delegate, delegate, delegate
+4. Delegate, delegate, delegate
+  
   Let other classes handle functionality within their domain
 
 5. You ain't gonna need it (Russ Olsen's addition)
@@ -189,6 +191,14 @@ When installing applications, many will prompt the user with a number of install
 ###### Fixed Overhead
 In some situations there is a fixed overhead to executing a certain type of command.  Queuing up multiple commands and executing them together reduces the number of times we have to run the overhead code.  Database operations are an example of this.  If there isn't a persistent database connection, we have to create one each time we run database operations.  Since there is a cost to connecting to the database, a good approach may be to queue up the database operations and execute them in a batch.  The same logic holds for web applications when you need to make API calls to external applications.
 
+
+### MEDIATOR
+The Mediator pattern promotes a "many-to-many relationship network" to "full object status". Modelling the inter-relationships with an object enhances encapsulation, and allows the behavior of those inter-relationships to be modified or extended through subclassing.
+
+The Mediator defines the interface for communication between Colleague objects. The ConcreteMediator implements the Mediator interface and coordinates communication between Colleague objects. It is aware of all the Colleagues and their purpose with regards to inter communication.The ConcreteColleague communicates with other colleagues through the mediator.
+
+Without this pattern, all of the Colleagues would know about each other, leading to high coupling. By having all colleagues communicate through one central point we have a decoupled system while maintaining control on the object's interactions.
+
 ---
 ### ADAPTER
 
@@ -323,7 +333,7 @@ Factory pattern is one of most used design pattern in Object oriented design. Th
 
 In Factory pattern, we create object without exposing the creation logic to the client and refer to newly created object using a common interface.
 
-####Implementation
+#### Implementation
 
 We're going to create a Shape interface and concrete classes implementing the Shape interface. A factory class ShapeFactory is defined as a next step.
 
@@ -359,3 +369,41 @@ We continue by building our builder ComputerBuilder which will simplify the way 
 Finally, in our client application we instantiate an object of ComputerBuilder and we call the aforementioned methods on the builder to build our custom computer object during run-time.
 
 Note that we also make use of magic methods to rapidly build our computer object. As per the book we have overridden the method_missing() method to parse the method name and rapidly construct the object we need.
+
+---
+
+### Interpreter
+
+The Interpreter Pattern specifies how to evaluate(interpret) expressions in a language. The basic idea is to have a class for each symbol that may occur in expression. If we instantiate these classes and connect the objects together they will form a syntax tree of the language.
+
+#### Uses
+
+This design pattern is good at solving contained, well-bounded problems. Some characteristic uses of the interpreter design pattern are: 
+
+* Pattern matching languages such as regular expressions
+* Query languages such as SQL
+* Configuration languages(e.g. languages describing communication protocols).
+
+#### Implementation
+
+The book presents an interesting case of the pattern where we want to find files by name, size and more complex searches. The pattern implementation can be split in three parts the class definitions, the parser development and the expression evaluation. 
+
+##### Class definitions
+
+Lets consider the book example, where we have the following symbols:
+
+1) '|' -> Or Class
+
+2) '&' -> And Class
+
+For each symbol-token above we create a class, that is responsible for interpreting it's part of the expression.
+
+After we define and implement our classes we need a parser. The parser will read the input and produce an Abstract Syntax Tree or AST. The nodes of the tree are the instantiated objects of our classes. 
+
+##### Parser
+
+The produced AST is an object representation of our file finding expression. Each node of the tree is either terminal(objects that won't be broken down any further) or nonterminal(more abstract objects). 
+
+##### Expression evaluation
+
+This is basically the evaluation of the AST that was build by the parser. The nodes of the tree are evaluated against specific conditions we set.
